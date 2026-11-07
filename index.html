@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d7a5f">
+<meta name="description" content="ডাঃ মিনহাজ প্রজনন ব্যবস্থাপনা অ্যাপ">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="প্রজনন অ্যাপ">
+<title>ডাঃ মিনহাজ প্রজনন অ্যাপ</title>
+<style>
+:root{
+  --brand:#0d7a5f;
+  --brand-dark:#095c47;
+  --brand-light:#e6f4ef;
+  --bg:#f2f6f5;
+  --card:#ffffff;
+  --text:#12211d;
+  --muted:#6b8079;
+  --line:#dde8e4;
+  --danger:#d64545;
+  --radius:16px;
+  --shadow:0 2px 10px rgba(13,122,95,.07);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Noto Sans Bengali","Hind Siliguri","SolaimanLipi",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg); color:var(--text); font-size:16px; line-height:1.65;
+  padding-bottom:92px; min-height:100vh;
+}
+h1,h2,h3,p{margin:0}
+
+/* ---------- Header ---------- */
+.app-header{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+  color:#fff; padding:14px 16px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow:0 3px 14px rgba(0,0,0,.12);
+}
+.logo{
+  width:44px;height:44px;border-radius:12px;flex:0 0 44px;
+  background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3);
+  display:grid;place-items:center;font-weight:700;font-size:20px;
+}
+.app-header h1{font-size:16px;font-weight:700;line-height:1.3}
+.app-header p{font-size:12px;opacity:.85}
+.install-btn{
+  margin-left:auto; background:rgba(255,255,255,.16); color:#fff;
+  border:1px solid rgba(255,255,255,.45); border-radius:999px;
+  padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer;
+  font-family:inherit; white-space:nowrap;
+}
+.install-btn:active{background:rgba(255,255,255,.3)}
+[hidden]{display:none !important}
+
+/* ---------- Layout ---------- */
+main{max-width:640px;margin:0 auto;padding:16px}
+.tab{display:none}
+.tab.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--card); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow); border:1px solid var(--line);
+  margin-bottom:14px;
+}
+.card-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-title span.ico{font-size:18px}
+
+/* ---------- Dashboard stats ---------- */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat{
+  background:var(--card);border-radius:var(--radius);padding:14px;
+  border:1px solid var(--line);box-shadow:var(--shadow);
+}
+.stat .label{font-size:12.5px;color:var(--muted);font-weight:600}
+.stat .value{font-size:26px;font-weight:700;color:var(--brand);line-height:1.25;margin-top:2px}
+.stat.alt .value{color:#c47b00}
+.stat.alt2 .value{color:#1f6fb2}
+.stat.alt3 .value{color:#8a4bbd}
+
+/* ---------- Form ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;color:#2b3d38}
+.field label .req{color:var(--danger)}
+input,select,textarea{
+  width:100%; padding:12px 14px; font-size:15px; font-family:inherit;
+  border:1.5px solid var(--line); border-radius:12px; background:#fbfdfc;
+  color:var(--text); outline:none; transition:.18s;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--brand); background:#fff;
+  box-shadow:0 0 0 3px rgba(13,122,95,.12);
+}
+select{
+  appearance:none;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230d7a5f'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center;
+  background-size:26px; padding-right:42px;
+}
+textarea{resize:vertical;min-height:64px}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%; padding:13px 18px; font-size:15.5px; font-weight:700;
+  font-family:inherit; border:none; border-radius:12px; cursor:pointer;
+  background:var(--brand); color:#fff; transition:.15s;
+}
+.btn:active{transform:scale(.985);background:var(--brand-dark)}
+.btn.secondary{background:var(--brand-light);color:var(--brand-dark);border:1.5px solid #c6e3d8}
+.btn.ghost{background:#fff;color:var(--brand-dark);border:1.5px solid var(--line)}
+.btn.danger{background:#fdecec;color:var(--danger);border:1.5px solid #f5c9c9}
+.btn.small{width:auto;padding:9px 14px;font-size:13.5px}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ---------- Record items ---------- */
+.record{
+  background:#fff;border:1px solid var(--line);border-left:4px solid var(--brand);
+  border-radius:12px;padding:12px 14px;margin-bottom:10px;
+  box-shadow:0 1px 4px rgba(13,122,95,.05);
+  position:relative;
+}
+.record .r-top{display:flex;align-items:flex-start;gap:8px}
+.record .r-name{font-weight:700;font-size:15.5px;flex:1}
+.record .r-seed{
+  background:var(--brand-light);color:var(--brand-dark);
+  font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;
+  white-space:nowrap;
+}
+.record .r-line{font-size:13.5px;color:var(--muted);margin-top:4px;display:flex;gap:6px}
+.record .r-line b{color:#3d514b;font-weight:600}
+.record .r-date{
+  font-size:12.5px;color:var(--brand);font-weight:700;margin-top:6px;
+}
+.record .del{
+  position:absolute;top:10px;right:10px;
+  background:#fdecec;color:var(--danger);border:none;
+  width:30px;height:30px;border-radius:9px;font-size:15px;cursor:pointer;
+  display:grid;place-items:center;
+}
+.record .r-top{padding-right:36px}
+
+/* ---------- Seed list ---------- */
+.seed-item{
+  display:flex;align-items:center;gap:10px;
+  background:#fbfdfc;border:1px solid var(--line);
+  border-radius:11px;padding:11px 14px;margin-bottom:9px;
+}
+.seed-item .sname{flex:1;font-weight:600;font-size:15px}
+.seed-item .sicon{color:var(--brand);font-size:16px}
+
+/* ---------- Empty state ---------- */
+.empty{
+  text-align:center;padding:34px 16px;color:var(--muted);font-size:14px;
+}
+.empty .big{font-size:40px;display:block;margin-bottom:8px;opacity:.45}
+
+/* ---------- Bottom nav ---------- */
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:#fff;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  box-shadow:0 -3px 16px rgba(13,122,95,.08);
+  max-width:640px;margin:0 auto;
+}
+.nav-btn{
+  background:none;border:none;font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:7px 2px;font-size:11.5px;font-weight:600;color:var(--muted);
+  border-radius:10px;transition:.15s;
+}
+.nav-btn .ni{font-size:19px;line-height:1}
+.nav-btn.active{color:var(--brand);background:var(--brand-light)}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:110px;transform:translate(-50%,20px);
+  background:#12211d;color:#fff;padding:11px 22px;border-radius:999px;
+  font-size:14px;font-weight:600;opacity:0;pointer-events:none;
+  transition:.28s;z-index:200;max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Install card ---------- */
+.install-card{
+  background:linear-gradient(135deg,#e6f4ef,#f4fbf8);
+  border:1.5px dashed #a9d8c8;
+}
+.install-card p{font-size:13.5px;color:#41564f;margin-bottom:12px}
+
+.search-wrap{margin-bottom:12px}
+.count-note{font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="app-header">
+  <div class="logo">মি</div>
+  <div>
+    <h1>ডাঃ মিনহাজ প্রজনন অ্যাপ</h1>
+    <p>প্রজনন ব্যবস্থাপনা ড্যাশবোর্ড</p>
+  </div>
+  <button id="installBtnTop" class="install-btn" hidden>⬇ ইনস্টল</button>
+</header>
+
+<main>
+
+  <!-- ================= TAB : DASHBOARD ================= -->
+  <section id="tab-dash" class="tab active">
+
+    <div class="stats">
+      <div class="stat">
+        <div class="label">মোট এন্ট্রি</div>
+        <div class="value" id="statTotal">০</div>
+      </div>
+      <div class="stat alt">
+        <div class="label">আজকের এন্ট্রি</div>
+        <div class="value" id="statToday">০</div>
+      </div>
+      <div class="stat alt2">
+        <div class="label">মোট গ্রাহক</div>
+        <div class="value" id="statCustomers">০</div>
+      </div>
+      <div class="stat alt3">
+        <div class="label">ব্যবহৃত বীজ</div>
+        <div class="value" id="statSeeds">০</div>
+      </div>
+    </div>
+
+    <!-- ইনস্টল কার্ড -->
+    <div class="card install-card" id="installCard">
+      <div class="card-title"><span class="ico">📲</span> অ্যাপ ইনস্টল করুন</div>
+      <p id="installMsg">এই অ্যাপটি মোবাইলের হোম স্ক্রিনে ইনস্টল করে অফলাইনেও ব্যবহার করুন।</p>
+      <button class="btn" id="installBtnCard">⬇ ইনস্টল অ্যাপ</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">🕒</span> সর্বশেষ এন্ট্রি</div>
+      <div id="recentList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">⚙️</span> ডেটা ব্যাকআপ</div>
+      <div class="btn-row">
+        <button class="btn ghost small" id="exportCsv" style="width:100%">📄 CSV এক্সপোর্ট</button>
+        <button class="btn ghost small" id="exportJson" style="width:100%">💾 ব্যাকআপ (JSON)</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= TAB : NEW ENTRY ================= -->
+  <section id="tab-add" class="tab">
+    <div class="card">
+      <div class="card-title"><span class="ico">📝</span> নতুন প্রজনন এন্ট্রি</div>
+
+      <form id="entryForm" autocomplete="off">
+
+        <div class="field">
+          <label for="seedSelect">বীজের নাম <span class="req">*</span></label>
+          <select id="seedSelect" required>
+            <option value="">— বীজ নির্বাচন করুন —</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="customerName">গ্রাহকের নাম <span class="req">*</span></label>
+          <input type="text" id="customerName" placeholder="গ্রাহকের পূর্ণ নাম" required>
+        </div>
+
+        <div class="field">
+          <label for="customerPhone">মোবাইল নম্বর</label>
+          <input type="tel" id="customerPhone" placeholder="০১XXXXXXXXX" inputmode="numeric">
+        </div>
+
+        <div class="field">
+          <label for="customerAddress">ঠিকানা <span class="req">*</span></label>
+          <textarea id="customerAddress" placeholder="গ্রাম/বাজার, ইউনিয়ন, উপজেলা, জেলা" required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="entryDate">তারিখ <span class="req">*</span></label>
+          <input type="date" id="entryDate" required>
+        </div>
+
+        <div class="field">
+          <label for="entryNote">মন্তব্য</label>
+          <input type="text" id="entryNote" placeholder="ঐচ্ছিক (যেমন: ২য় ডোজ, ফলোআপ ইত্যাদি)">
+        </div>
+
+        <button type="submit" class="btn">✔ সংরক্ষণ করুন</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <p style="font-size:13.5px;color:#5b6f68">
+        💡 তালিকায় বীজ না থাকলে <b>“বীজ”</b> ট্যাবে গিয়ে নতুন বীজ যোগ করুন।
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= TAB : RECORDS ================= -->
+  <section id="tab-list" class="tab">
+    <div class="card">
+      <div class="card-title"><span class="ico">📋</span> সব রেকর্ড</div>
+      <div class="search-wrap">
+        <input type="search" id="searchInput" placeholder="🔍 নাম / বীজ / ঠিকানা দিয়ে খুঁজুন">
+      </div>
+      <div class="count-note" id="countNote"></div>
+      <div id="recordsList"></div>
+    </div>
+  </section>
+
+  <!-- ================= TAB : SEEDS ================= -->
+  <section id="tab-seeds" class="tab">
+    <div class="card">
+      <div class="card-title"><span class="ico">🌱</span> বীজের তালিকা</div>
+      <form id="seedForm" style="display:flex;gap:8px;margin-bottom:14px">
+        <input type="text" id="newSeedName" placeholder="নতুন বীজের নাম" required style="flex:1">
+        <button type="submit" class="btn small" style="width:auto">যোগ করুন</button>
+      </form>
+      <div id="seedList"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= BOTTOM NAV ================= -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="dash"><span class="ni">🏠</span>ড্যাশবোর্ড</button>
+  <button class="nav-btn" data-tab="add"><span class="ni">➕</span>নতুন</button>
+  <button class="nav-btn" data-tab="list"><span class="ni">📋</span>রেকর্ড</button>
+  <button class="nav-btn" data-tab="seeds"><span class="ni">🌱</span>বীজ</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ডাঃ মিনহাজ প্রজনন অ্যাপ  —  JavaScript
+   ========================================================= */
+
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+const LS_SEEDS = 'mh_seeds_v1';
+const LS_RECS  = 'mh_records_v1';
+
+/* ---------- ডিফল্ট বীজ ---------- */
+const DEFAULT_SEEDS = [
+  { id: 'sd1', name: 'ফ্রিজিয়ান' },
+  { id: 'sd2', name: 'শাহীওয়াল' },
+  { id: 'sd3', name: 'সিন্ধি' },
+  { id: 'sd4', name: 'ব্রাহম্যান' },
+  { id: 'sd5', name: 'হলস্টেইন ফ্রিজিয়ান' },
+  { id: 'sd6', name: 'অ্যাংগাস' }
+];
+
+/* ---------- হেল্পার ---------- */
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+const BN_DIGITS = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+const bnNum = n => String(n).replace(/\d/g, d => BN_DIGITS[+d]);
+
+const BN_MONTHS = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন',
+                   'জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+
+function todayStr() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  if (!y || !m || !d) return iso;
+  return `${bnNum(+d)} ${BN_MONTHS[+m - 1]} ${bnNum(y)}`;
+}
+
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- স্টেট ---------- */
+let seeds   = loadSeeds();
+let records = loadRecords();
+
+function loadSeeds() {
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_SEEDS));
+    if (Array.isArray(s) && s.length) return s;
+  } catch (e) {}
+  return DEFAULT_SEEDS.slice();
+}
+function loadRecords() {
+  try {
+    const r = JSON.parse(localStorage.getItem(LS_RECS));
+    if (Array.isArray(r)) return r;
+  } catch (e) {}
+  return [];
+}
+const saveSeeds   = () => localStorage.setItem(LS_SEEDS, JSON.stringify(seeds));
+const saveRecords = () => localStorage.setItem(LS_RECS, JSON.stringify(records));
+
+/* =========================================================
+   TAB SWITCHING
+   ========================================================= */
+function switchTab(name) {
+  $$('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + name));
+  $$('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (name === 'dash')  renderDashboard();
+  if (name === 'list')  renderRecords();
+  if (name === 'seeds') renderSeeds();
+  if (name === 'add')   fillSeedSelect();
+}
+$$('.nav-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+/* =========================================================
+   ড্যাশবোর্ড
+   ========================================================= */
+function renderDashboard() {
+  const today = todayStr();
+  const total = records.length;
+  const todayCount = records.filter(r => r.date === today).length;
+  const customers = new Set(records.map(r => (r.customer || '').trim())).size;
+  const seedTypes = new Set(records.map(r => r.seedName)).size;
+
+  $('#statTotal').textContent     = bnNum(total);
+  $('#statToday').textContent     = bnNum(todayCount);
+  $('#statCustomers').textContent = bnNum(customers);
+  $('#statSeeds').textContent     = bnNum(seedTypes);
+
+  /* সর্বশেষ ৫টি এন্ট্রি */
+  const recent = records
+    .slice()
+    .sort((a, b) => (b.date + b.createdAt).localeCompare(a.date + a.createdAt))
+    .slice(0, 5);
+
+  const box = $('#recentList');
+  if (!recent.length) {
+    box.innerHTML = `<div class="empty"><span class="big">📭</span>এখনো কোনো এন্ট্রি নেই।<br>“নতুন” ট্যাব থেকে প্রথম এন্ট্রি করুন।</div>`;
+    return;
+  }
+  box.innerHTML = recent.map(r => recordHTML(r, false)).join('');
+}
+
+/* =========================================================
+   রেকর্ড কার্ড HTML
+   ========================================================= */
+function recordHTML(r, showDelete = true) {
+  const phone = r.phone ? `<div class="r-line"><b>📞</b> ${esc(r.phone)}</div>` : '';
+  const note  = r.note  ? `<div class="r-line"><b>📝</b> ${esc(r.note)}</div>`  : '';
+  const del   = showDelete
+    ? `<button class="del" data-del="${r.id}" title="মুছুন">🗑</button>` : '';
+  return `
+    <div class="record">
+      ${del}
+      <div class="r-top">
+        <div class="r-name">${esc(r.customer)}</div>
+        <div class="r-seed">${esc(r.seedName)}</div>
+      </div>
+      <div class="r-line"><b>📍</b> ${esc(r.address)}</div>
+      ${phone}
+      ${note}
+      <div class="r-date">📅 ${fmtDate(r.date)}</div>
+    </div>`;
+}
+
+function esc(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* =========================================================
+   বীজের ড্রপডাউন
+   ========================================================= */
+function fillSeedSelect() {
+  const sel = $('#seedSelect');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— বীজ নির্বাচন করুন —</option>' +
+    seeds.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  if (cur && seeds.some(s => s.id === cur)) sel.value = cur;
+}
+
+/* =========================================================
+   নতুন এন্ট্রি ফর্ম
+   ========================================================= */
+$('#entryForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const seedId   = $('#seedSelect').value;
+  const seedObj  = seeds.find(s => s.id === seedId);
+  const customer = $('#customerName').value.trim();
+  const phone    = $('#customerPhone').value.trim();
+  const address  = $('#customerAddress').value.trim();
+  const date     = $('#entryDate').value;
+  const note     = $('#entryNote').value.trim();
+
+  if (!seedObj)  { toast('⚠️ বীজ নির্বাচন করুন'); return; }
+  if (!customer) { toast('⚠️ গ্রাহকের নাম লিখুন'); return; }
+  if (!address)  { toast('⚠️ ঠিকানা লিখুন'); return; }
+  if (!date)     { toast('⚠️ তারিখ দিন'); return; }
+
+  records.push({
+    id: uid(),
+    seedId: seedObj.id,
+    seedName: seedObj.name,
+    customer, phone, address, date, note,
+    createdAt: new Date().toISOString()
+  });
+  saveRecords();
+
+  /* ফর্ম রিসেট */
+  e.target.reset();
+  $('#entryDate').value = todayStr();
+  fillSeedSelect();
+
+  toast('✅ এন্ট্রি সংরক্ষণ হয়েছে');
+  switchTab('list');
+});
+
+/* =========================================================
+   রেকর্ড লিস্ট
+   ========================================================= */
+function renderRecords() {
+  const q = ($('#searchInput').value || '').trim().toLowerCase();
+
+  let list = records.slice().sort(
+    (a, b) => (b.date + b.createdAt).localeCompare(a.date + a.createdAt)
+  );
+
+  if (q) {
+    list = list.filter(r =>
+      [r.customer, r.address, r.seedName, r.phone || '', r.note || '']
+        .join(' ').toLowerCase().includes(q)
+    );
+  }
+
+  $('#countNote').textContent = `মোট ${bnNum(list.length)} টি রেকর্ড`;
+
+  const box = $('#recordsList');
+  if (!list.length) {
+    box.innerHTML = `<div class="empty"><span class="big">🔍</span>কোনো রেকর্ড পাওয়া যায়নি।</div>`;
+    return;
+  }
+  box.innerHTML = list.map(r => recordHTML(r, true)).join('');
+}
+
+/* সার্চ */
+$('#searchInput').addEventListener('input', renderRecords);
+
+/* ডিলিট (ইভেন্ট ডেলিগেশন) */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-del]');
+  if (!btn) return;
+  const id = btn.dataset.del;
+  const rec = records.find(r => r.id === id);
+  if (!rec) return;
+  if (confirm(`"${rec.customer}" এর এন্ট্রিটি মুছে ফেলবেন?`)) {
+    records = records.filter(r => r.id !== id);
+    saveRecords();
+    renderRecords();
+    renderDashboard();
+    toast('🗑 এন্ট্রি মুছে ফেলা হয়েছে');
+  }
+});
+
+/* =========================================================
+   বীজ ব্যবস্থাপনা
+   ========================================================= */
+function renderSeeds() {
+  const box = $('#seedList');
+  if (!seeds.length) {
+    box.innerHTML = `<div class="empty"><span class="big">🌱</span>কোনো বীজ যোগ করা হয়নি।</div>`;
+    return;
+  }
+  box.innerHTML = seeds.map(s => {
+    const used = records.filter(r => r.seedId === s.id).length;
+    return `
+      <div class="seed-item">
+        <span class="sicon">🌱</span>
+        <span class="sname">${esc(s.name)}</span>
+        <span style="font-size:12px;color:#8aa39b">${bnNum(used)} বার</span>
+        <button class="del" style="position:static;width:28px;height:28px"
+                data-del-seed="${s.id}" title="মুছুন">🗑</button>
+      </div>`;
+  }).join('');
+}
+
+$('#seedForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#newSeedName').value.trim();
+  if (!name) return;
+
+  if (seeds.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+    toast('⚠️ এই বীজ আগেই আছে');
+    return;
+  }
+  seeds.push({ id: uid(), name });
+  saveSeeds();
+  $('#newSeedName').value = '';
+  renderSeeds();
+  fillSeedSelect();
+  toast('✅ নতুন বীজ যোগ হয়েছে');
+});
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-del-seed]');
+  if (!btn) return;
+  const id = btn.dataset.delSeed;
+  const s = seeds.find(x => x.id === id);
+  if (!s) return;
+  if (confirm(`"${s.name}" বীজটি তালিকা থেকে মুছবেন?\n(পুরনো রেকর্ড অপরিবর্তিত থাকবে)`)) {
+    seeds = seeds.filter(x => x.id !== id);
+    saveSeeds();
+    renderSeeds();
+    fillSeedSelect();
+    toast('🗑 বীজ মুছে ফেলা হয়েছে');
+  }
+});
+
+/* =========================================================
+   এক্সপোর্ট / ব্যাকআপ
+   ========================================================= */
+function download(content, filename, type) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+$('#exportCsv').addEventListener('click', () => {
+  if (!records.length) { toast('⚠️ কোনো ডেটা নেই'); return; }
+  const rows = [['তারিখ', 'বীজের নাম', 'গ্রাহকের নাম', 'মোবাইল', 'ঠিকানা', 'মন্তব্য']];
+  records.slice()
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .forEach(r => rows.push([r.date, r.seedName, r.customer, r.phone || '', r.address, r.note || '']));
+
+  const csv = '\uFEFF' + rows.map(row =>
+    row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')
+  ).join('\n');
+
+  download(csv, `minhaz-projonon-${todayStr()}.csv`, 'text/csv;charset=utf-8');
+  toast('📄 CSV ডাউনলোড হচ্ছে');
+});
+
+$('#exportJson').addEventListener('click', () => {
+  const data = { app: 'Dr. Minhaz Projonon', exportedAt: new Date().toISOString(), seeds, records };
+  download(JSON.stringify(data, null, 2), `minhaz-backup-${todayStr()}.json`, 'application/json');
+  toast('💾 ব্যাকআপ ডাউনলোড হচ্ছে');
+});
+
+/* =========================================================
+   PWA — ইনস্টল
+   ========================================================= */
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  $('#installBtnTop').hidden = false;
+  $('#installMsg').textContent = 'অ্যাপটি ইনস্টল করতে নিচের বাটনে ক্লিক করুন।';
+});
+
+async function doInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      toast('🎉 অ্যাপ ইনস্টল হয়েছে');
+      $('#installBtnTop').hidden = true;
+    }
+    deferredPrompt = null;
+  } else {
+    /* ম্যানুয়াল নির্দেশনা */
+    const ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) {
+      alert('📲 ইনস্টল করার নিয়ম (iPhone):\n\n১. Safari ব্রাউজারে এই পেজটি খুলুন\n২. নিচের Share (⬆) বাটনে চাপ দিন\n৩. "Add to Home Screen" সিলেক্ট করুন\n৪. "Add" চাপুন');
+    } else if (/Android/i.test(ua)) {
+      alert('📲 ইনস্টল করার নিয়ম (Android):\n\n১. Chrome ব্রাউজারে এই পেজটি খুলুন\n২. উপরে ডান দিকের ⋮ মেনুতে চাপ দিন\n৩. "Install app" বা "Add to Home screen" সিলেক্ট করুন');
+    } else {
+      alert('📲 ব্রাউজারের মেনু থেকে "Install app" অপশনটি নির্বাচন করুন।');
+    }
+  }
+}
+
+$('#installBtnTop').addEventListener('click', doInstall);
+$('#installBtnCard').addEventListener('click', doInstall);
+
+window.addEventListener('appinstalled', () => {
+  $('#installBtnTop').hidden = true;
+  $('#installMsg').textContent = '✅ অ্যাপটি ইনস্টল সম্পন্ন হয়েছে!';
+  toast('🎉 অ্যাপ ইনস্টল হয়েছে');
+});
+
+/* Service Worker রেজিস্ট্রেশন */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+(function init() {
+  $('#entryDate').value = todayStr();
+  fillSeedSelect();
+  renderDashboard();
+  renderSeeds();
+  renderRecords();
+
+  /* ইনস্টল কার্ড লুকানো (যদি অলরেডি standalone এ চলে) */
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    $('#installCard').hidden = true;
+    $('#installBtnTop').hidden = true;
+  }
+})();
+</script>
+</body>
+</html>
